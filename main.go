@@ -9,7 +9,6 @@ import (
 	"os"
 
 	"rsc.io/quote"
-	// "github.com/mgaza/goTools"
 )
 
 func main() {
@@ -20,7 +19,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// goTools.checkError("Found an error: ", err)
+	goTools.checkError("Found an error: ", err)
 
 	// Parse the file
 	r := csv.NewReader(bufio.NewReader(ericexportfile))
