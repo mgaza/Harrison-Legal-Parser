@@ -1,4 +1,4 @@
-# github.com/mgaza/goTools v0.0.0-20220111165653-e44f7d625757
+# github.com/mgaza/goTools v0.0.0-20220111172601-513fce239562
 ## explicit
 github.com/mgaza/goTools
 # golang.org/x/text v0.0.0-20170915032832-14c0d48ead0c

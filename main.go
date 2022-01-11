@@ -21,7 +21,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	gT.checkError("Found an error: ", err)
+	gT.CheckError("Found an error: ", err)
 
 	// Parse the file
 	r := csv.NewReader(bufio.NewReader(ericexportfile))
