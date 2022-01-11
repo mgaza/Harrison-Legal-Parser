@@ -13,7 +13,7 @@ import (
 )
 
 func main() {
-	gT := goTools.New()
+
 	fmt.Println(quote.Go())
 	// Open the file
 	ericexportfile, err := os.Open("C:\\Users\\mgaza\\Desktop\\temp\\Harrison\\1903-1929\\harrison_1903-01-01_1903-12-31.csv")
@@ -21,7 +21,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	gT.CheckError("Found an error: ", err)
+	goTools.CheckError("Found an error: ", err)
 
 	// Parse the file
 	r := csv.NewReader(bufio.NewReader(ericexportfile))
