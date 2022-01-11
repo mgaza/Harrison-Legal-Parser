@@ -1,5 +1,3 @@
-github.com/mgaza/goTools v0.0.0-20220111163813-c7506b11c2a1 h1:feR97qISWPK5vzKyHzZcqGyMcftTt/NLCpnqkFM81Io=
-github.com/mgaza/goTools v0.0.0-20220111163813-c7506b11c2a1/go.mod h1:OpvW2sI8Hzi/24RlTQ8MS+DAsKGvWdmwus64551KFwI=
 github.com/mgaza/goTools v0.0.0-20220111165653-e44f7d625757 h1:m7W+p/yIN03zMxIMTp3ev60DJLB0xvv+G5PQfeMQ7f0=
 github.com/mgaza/goTools v0.0.0-20220111165653-e44f7d625757/go.mod h1:NS2jwwD5XumQkhAwy0KulI99chpOzoLDIv1CQg5nNq0=
 golang.org/x/text v0.0.0-20170915032832-14c0d48ead0c h1:qgOY6WgZOaTkIIMiVjBQcw93ERBE4m30iBm00nkL0i8=

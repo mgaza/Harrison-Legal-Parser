@@ -1,5 +1,6 @@
-# github.com/mgaza/goTools v0.0.0-20220111165653-e44f7d625757 => ..\goTools
+# github.com/mgaza/goTools v0.0.0-20220111165653-e44f7d625757
 ## explicit
+github.com/mgaza/goTools
 # golang.org/x/text v0.0.0-20170915032832-14c0d48ead0c
 ## explicit
 golang.org/x/text/internal/tag
@@ -10,4 +11,3 @@ rsc.io/quote
 # rsc.io/sampler v1.3.0
 ## explicit
 rsc.io/sampler
-# github.com/mgaza/goTools => ..\goTools
