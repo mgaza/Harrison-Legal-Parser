@@ -1,3 +1,3 @@
-# github.com/mgaza/goTools v0.0.0-20220111172601-513fce239562
+# github.com/mgaza/goTools v0.0.0-20220112222732-3d74623ba831
 ## explicit
 github.com/mgaza/goTools

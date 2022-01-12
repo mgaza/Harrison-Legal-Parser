@@ -5,40 +5,55 @@ import (
 	"encoding/csv"
 	"fmt"
 	"io"
-	"log"
+	"io/fs"
 	"os"
+	"path/filepath"
+	"regexp"
 
 	"github.com/mgaza/goTools"
 )
 
 func main() {
 
-	// Open the file
-	ericexportfile, err := os.Open("C:\\Users\\mgaza\\Desktop\\temp\\Harrison\\1903-1929\\harrison_1903-01-01_1903-12-31.csv")
-	if err != nil {
-		log.Fatal(err)
-	}
+	// path to source files
+	ericexportfilepath := "C:\\Users\\mgaza\\Desktop\\temp\\Harrison\\1903-1929"
+	extfile := "csv"
 
-	goTools.CheckError("Found an error: ", err)
+	err := filepath.WalkDir(ericexportfilepath, func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			fmt.Printf("prevent panic by handling failure accessing a path %q: %v\n", path, err)
+			return err
+		}
 
-	// Parse the file
-	r := csv.NewReader(bufio.NewReader(ericexportfile))
+		re := regexp.MustCompile(extfile)
+
+		if re.MatchString(d.Name()) {
+			sourcefile, err := os.Open(path)
+			goTools.CheckErrorFatal("could not open: ", err)
+
+			r := csv.NewReader(bufio.NewReader(sourcefile))
+			fileReader(r)
+
+			sourcefile.Close()
+		}
+
+		return nil
+	})
+
+	goTools.CheckErrorFatal("error walking the path: ", err)
+}
+
+func fileReader(newFile *csv.Reader) {
 
 	// Iterate through the records
 	for {
 		// Read each record from csv
-		record, err := r.Read()
+		record, err := newFile.Read()
 
 		if err == io.EOF {
 			break
 		}
-		goTools.CheckError("Found an error: ", err)
+		goTools.CheckErrorFatal("Found an error: ", err)
 		fmt.Printf("remark: %s\n", record[13])
 	}
 }
-
-// func checkError(message string, err error) {
-// 	if err != nil {
-// 		log.Fatal(message, err)
-// 	}
-// }
