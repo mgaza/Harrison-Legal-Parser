@@ -9,12 +9,10 @@ import (
 	"os"
 
 	"github.com/mgaza/goTools"
-	"rsc.io/quote"
 )
 
 func main() {
 
-	fmt.Println(quote.Go())
 	// Open the file
 	ericexportfile, err := os.Open("C:\\Users\\mgaza\\Desktop\\temp\\Harrison\\1903-1929\\harrison_1903-01-01_1903-12-31.csv")
 	if err != nil {
@@ -34,7 +32,7 @@ func main() {
 		if err == io.EOF {
 			break
 		}
-		// goTools.checkError("Found an error: ", err)
+		goTools.CheckError("Found an error: ", err)
 		fmt.Printf("remark: %s\n", record[13])
 	}
 }

@@ -2,12 +2,4 @@ module github.com/mgaza/Harrison-Legal-Parser
 
 go 1.17
 
-require (
-	github.com/mgaza/goTools v0.0.0-20220111172601-513fce239562
-	rsc.io/quote v1.5.2
-)
-
-require (
-	golang.org/x/text v0.0.0-20170915032832-14c0d48ead0c // indirect
-	rsc.io/sampler v1.3.0 // indirect
-)
+require github.com/mgaza/goTools v0.0.0-20220111172601-513fce239562
