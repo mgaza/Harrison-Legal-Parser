@@ -1,8 +1,11 @@
 package main
 
 import (
+	"bufio"
+	"encoding/csv"
 	"flag"
 	"fmt"
+	"os"
 
 	"github.com/mgaza/goTools"
 )
@@ -19,41 +22,29 @@ func main() {
 
 	importfilepaths := goTools.FilePathWalker(ericexportfilepath, "csv")
 
-	for i, s := range importfilepaths {
-		fmt.Println(i, s)
+	outdirectory := ericexportfilepath + "\\output"
+	err := os.Mkdir(outdirectory, 0755)
+	goTools.CheckErrorNonFatal("Could not make directory: ", err)
+
+	for _, s := range importfilepaths {
+		openReadFile(s, outdirectory)
+
+		fmt.Println("writing: ", s)
 	}
 
 }
 
-// func filePathWalker(filePath string, extfile string) []string {
-// 	re := regexp.MustCompile(extfile)
-// 	var paths []string
+func openReadFile(path string, outdirectory string) {
+	sourcefile, err := os.Open(path)
+	goTools.CheckErrorFatal("could not open: ", err)
+	defer goTools.CloseFile(sourcefile)
 
-// 	err := filepath.WalkDir(filePath, func(path string, d fs.DirEntry, err error) error {
-// 		if err != nil {
-// 			fmt.Printf("prevent panic by handling failure accessing a path %q: %v\n", path, err)
-// 			return err
-// 		}
+	r := csv.NewReader(bufio.NewReader(sourcefile))
+	//fileReader(r)
+	records, _ := r.ReadAll()
+	goTools.OpenAndWriteCSVFile("thisisatest.csv", outdirectory, records)
 
-// 		if re.MatchString(d.Name()) {
-// 			paths = append(paths, path)
-// 		}
-
-// 		return nil
-// 	})
-
-// 	goTools.CheckErrorFatal("error walking the path: ", err)
-// 	return paths
-// }
-
-// func openReadFile(path string) {
-// 	sourcefile, err := os.Open(path)
-// 	goTools.CheckErrorFatal("could not open: ", err)
-// 	defer closeFile(sourcefile)
-
-// 	r := csv.NewReader(bufio.NewReader(sourcefile))
-// 	fileReader(r)
-// }
+}
 
 // func fileReader(newFile *csv.Reader) {
 
@@ -68,9 +59,4 @@ func main() {
 // 		goTools.CheckErrorFatal("Found an error: ", err)
 // 		fmt.Printf("remark: %s\n", record[13])
 // 	}
-// }
-
-// func closeFile(f *os.File) {
-// 	err := f.Close()
-// 	goTools.CheckErrorFatal("could not close file: ", err)
 // }
