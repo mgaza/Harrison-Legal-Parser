@@ -2,3 +2,7 @@ github.com/mgaza/goTools v0.0.0-20220111172601-513fce239562 h1:bLBWLMopw+q0GxvHP
 github.com/mgaza/goTools v0.0.0-20220111172601-513fce239562/go.mod h1:NS2jwwD5XumQkhAwy0KulI99chpOzoLDIv1CQg5nNq0=
 github.com/mgaza/goTools v0.0.0-20220112222732-3d74623ba831 h1:GGTPI3vRoNkjcHJSR+yeKG/PS860foCwatv0jRdwbDc=
 github.com/mgaza/goTools v0.0.0-20220112222732-3d74623ba831/go.mod h1:NS2jwwD5XumQkhAwy0KulI99chpOzoLDIv1CQg5nNq0=
+github.com/mgaza/goTools v0.0.0-20220117154904-6b833e87fb0f h1:fl1vJoKp0WpmTKhjdhWQeTtJE5fpICso9bdmXCFfoQg=
+github.com/mgaza/goTools v0.0.0-20220117154904-6b833e87fb0f/go.mod h1:NS2jwwD5XumQkhAwy0KulI99chpOzoLDIv1CQg5nNq0=
+github.com/mgaza/goTools v0.0.0-20220117155152-651bb55f3c28 h1:fZ9uoSn2+wOITlR5CLZ8RjQjSHtNI+BepUvbCywnOFg=
+github.com/mgaza/goTools v0.0.0-20220117155152-651bb55f3c28/go.mod h1:NS2jwwD5XumQkhAwy0KulI99chpOzoLDIv1CQg5nNq0=
