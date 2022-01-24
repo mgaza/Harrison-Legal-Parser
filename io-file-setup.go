@@ -11,14 +11,11 @@ import (
 
 func ReadFilePaths(ericexportfilepath string, remarkPtr *bool) AllLegalInfo {
 	fileInfoToPass := AllLegalInfo{}
-	fileInfoToPass.exportContent = make(map[string][][]string)
-	fileInfoToPass.remarkPtr = *remarkPtr
+	fileInfoToPass.ExportContent = make(map[string][][]string)
+	fileInfoToPass.RemarkPtr = *remarkPtr
 
 	switch *remarkPtr {
-	case false:
-		// Remember to write for 1930-1980
-		fmt.Println("No function exists yet for index reading")
-	default:
+	case true:
 		importfilepaths := goTools.FilePathWalker(ericexportfilepath, "csv")
 
 		outdirectory := ericexportfilepath + "\\output"
@@ -27,9 +24,11 @@ func ReadFilePaths(ericexportfilepath string, remarkPtr *bool) AllLegalInfo {
 
 		for _, s := range importfilepaths {
 			openReadFile(s, outdirectory, &fileInfoToPass)
-
-			// fmt.Println("writing: ", s)
 		}
+
+	default:
+		// Remember to write for 1930-1980
+		fmt.Println("No function exists yet for index reading")
 	}
 
 	return fileInfoToPass
@@ -39,7 +38,7 @@ func openReadFile(path string, outdirectory string, fileInfoToPass *AllLegalInfo
 	yearMonth := goTools.GetExportYearMonth(path)
 
 	writeFileNamePath := outdirectory + "\\" + yearMonth + ".csv"
-	fileInfoToPass.outputFiles = append(fileInfoToPass.outputFiles, writeFileNamePath)
+	fileInfoToPass.OutputFiles = append(fileInfoToPass.OutputFiles, writeFileNamePath)
 
 	sourcefile, err := os.Open(path)
 	goTools.CheckErrorFatal("could not open: ", err)
@@ -48,7 +47,8 @@ func openReadFile(path string, outdirectory string, fileInfoToPass *AllLegalInfo
 	r := csv.NewReader(bufio.NewReader(sourcefile))
 	// fileReader(r)
 	records, _ := r.ReadAll()
-	fileInfoToPass.exportContent[yearMonth] = records
+	fileInfoToPass.ExportContent[yearMonth] = records
+	fileInfoToPass.ExportKey = append(fileInfoToPass.ExportKey, yearMonth)
 
 	// for _, i := range records {
 	// 	for _, j := range i {
