@@ -38,6 +38,9 @@ func ReadFilePaths(ericexportfilepath string, remarkPtr *bool) AllLegalInfo {
 func openReadFile(path string, outdirectory string, fileInfoToPass *AllLegalInfo) {
 	yearMonth := goTools.GetExportYearMonth(path)
 
+	writeFileNamePath := outdirectory + "\\" + yearMonth + ".csv"
+	fileInfoToPass.outputFiles = append(fileInfoToPass.outputFiles, writeFileNamePath)
+
 	sourcefile, err := os.Open(path)
 	goTools.CheckErrorFatal("could not open: ", err)
 	defer goTools.CloseFile(sourcefile)

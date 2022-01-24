@@ -5,7 +5,6 @@ import (
 )
 
 func main() {
-
 	// path to source files
 	// ericexportfilepath := "C:\\Users\\mgaza\\Desktop\\temp\\Harrison\\1903-1929"
 
