@@ -15,21 +15,6 @@ func main() {
 	remarkPtr := flag.Bool("remarkRead", true, "bool to show whether or not to parse from remarks or index files")
 	flag.Parse()
 
-	ReadFilePaths(ericexportfilepath, remarkPtr)
+	HarrisonParser(ReadFilePaths(ericexportfilepath, remarkPtr))
 
 }
-
-// func fileReader(newFile *csv.Reader) {
-
-// 	// Iterate through the records
-// 	for {
-// 		// Read each record from csv
-// 		record, err := newFile.Read()
-
-// 		if err == io.EOF {
-// 			break
-// 		}
-// 		goTools.CheckErrorFatal("Found an error: ", err)
-// 		fmt.Printf("remark: %s\n", record[13])
-// 	}
-// }

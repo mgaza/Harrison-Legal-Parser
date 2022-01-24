@@ -9,7 +9,10 @@ import (
 	"github.com/mgaza/goTools"
 )
 
-func ReadFilePaths(ericexportfilepath string, remarkPtr *bool) {
+func ReadFilePaths(ericexportfilepath string, remarkPtr *bool) AllLegalInfo {
+	fileInfoToPass := AllLegalInfo{}
+	fileInfoToPass.exportContent = make(map[string][][]string)
+	fileInfoToPass.remarkPtr = *remarkPtr
 
 	switch *remarkPtr {
 	case false:
@@ -23,22 +26,47 @@ func ReadFilePaths(ericexportfilepath string, remarkPtr *bool) {
 		goTools.CheckErrorNonFatal("Could not make directory: ", err)
 
 		for _, s := range importfilepaths {
-			openReadFile(s, outdirectory)
+			openReadFile(s, outdirectory, &fileInfoToPass)
 
-			fmt.Println("writing: ", s)
+			// fmt.Println("writing: ", s)
 		}
 	}
 
+	return fileInfoToPass
 }
 
-func openReadFile(path string, outdirectory string) {
+func openReadFile(path string, outdirectory string, fileInfoToPass *AllLegalInfo) {
+	yearMonth := goTools.GetExportYearMonth(path)
+
 	sourcefile, err := os.Open(path)
 	goTools.CheckErrorFatal("could not open: ", err)
 	defer goTools.CloseFile(sourcefile)
 
 	r := csv.NewReader(bufio.NewReader(sourcefile))
-	//fileReader(r)
+	// fileReader(r)
 	records, _ := r.ReadAll()
-	goTools.OpenAndWriteCSVFile("thisisatest.csv", outdirectory, records)
+	fileInfoToPass.exportContent[yearMonth] = records
+
+	// for _, i := range records {
+	// 	for _, j := range i {
+	// 		fmt.Println(j)
+	// 	}
+	// }
+	// goTools.OpenAndWriteCSVFile("thisisatest.csv", outdirectory, records)
 
 }
+
+// func fileReader(newFile *csv.Reader) {
+
+// 	// Iterate through the records
+// 	for {
+// 		// Read each record from csv
+// 		record, err := newFile.Read()
+
+// 		if err == io.EOF {
+// 			break
+// 		}
+// 		goTools.CheckErrorFatal("Found an error: ", err)
+// 		fmt.Printf("remark: %s\n", record[13])
+// 	}
+// }
