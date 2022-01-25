@@ -4,6 +4,13 @@ import (
 	"fmt"
 )
 
+type InstrumentInfo struct {
+	ID                  string
+	LegalAttributes     struct{}
+	AmountAttributes    struct{}
+	ReferenceAttributes struct{}
+}
+
 type LegalAttributes struct {
 	AbstractName              string
 	AbstractNumber            string
@@ -40,7 +47,18 @@ type LegalAttributes struct {
 	Unit                      string
 }
 
+type AmountAttributes struct {
+	Amount string
+}
+
+type ReferenceAttributes struct {
+	Number string
+	Volume string
+	Page   string
+}
+
 type AllLegalInfo struct {
+	CountyName    string
 	ExportContent map[string][][]string
 	ExportKey     []string
 	IndexContent  map[string][][]string
@@ -49,7 +67,7 @@ type AllLegalInfo struct {
 	RemarkPtr     bool
 }
 
-func HarrisonParser(AllInfo AllLegalInfo) {
+func CountyParser(AllInfo AllLegalInfo) {
 
 	switch AllInfo.RemarkPtr {
 	case true:

@@ -14,6 +14,6 @@ func main() {
 	remarkPtr := flag.Bool("remarkRead", true, "bool to show whether or not to parse from remarks or index files")
 	flag.Parse()
 
-	HarrisonParser(ReadFilePaths(ericexportfilepath, remarkPtr))
+	CountyParser(ReadFilePaths(ericexportfilepath, remarkPtr))
 
 }
