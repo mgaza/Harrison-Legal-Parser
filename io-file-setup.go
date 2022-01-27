@@ -16,14 +16,14 @@ func ReadFilePaths(ericexportfilepath string, remarkPtr *bool) AllLegalInfo {
 
 	switch *remarkPtr {
 	case true:
-		importfilepaths := goTools.FilePathWalker(ericexportfilepath, "csv")
+		importfilepaths := goTools.FilePathWalker(ericexportfilepath, `([a-z]+|[a-z]+_[a-z]+)_\d{4}-\d{2}-\d{2}_\d{4}-\d{2}-\d{2}`)
 
 		outdirectory := ericexportfilepath + "\\output"
 		err := os.Mkdir(outdirectory, 0755)
 		goTools.CheckErrorNonFatal("Could not make directory: ", err)
 
 		for _, s := range importfilepaths {
-			openReadFile(s, outdirectory, &fileInfoToPass)
+			openReadFile(s, outdirectory, &fileInfoToPass) // Do Not Read All Exports at Once. Instead Process One at a Time
 		}
 
 	default:
@@ -34,6 +34,7 @@ func ReadFilePaths(ericexportfilepath string, remarkPtr *bool) AllLegalInfo {
 	return fileInfoToPass
 }
 
+// Refactor to read in Contents, Write to Path, and Dump Export Info to save memory
 func openReadFile(path string, outdirectory string, fileInfoToPass *AllLegalInfo) {
 	countyname, yearMonth := goTools.GetExportCountyYearMonth(path)
 	fileInfoToPass.CountyName = countyname

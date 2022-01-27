@@ -6,9 +6,9 @@ import (
 
 type InstrumentInfo struct {
 	ID                  string
-	LegalAttributes     struct{}
-	AmountAttributes    struct{}
-	ReferenceAttributes struct{}
+	LegalAttributes     []LegalAttributes
+	AmountAttributes    []AmountAttributes
+	ReferenceAttributes []ReferenceAttributes
 }
 
 type LegalAttributes struct {
@@ -59,7 +59,7 @@ type ReferenceAttributes struct {
 
 type AllLegalInfo struct {
 	CountyName    string
-	ExportContent map[string][][]string
+	ExportContent map[string][][]string // Change to Not Map
 	ExportKey     []string
 	IndexContent  map[string][][]string
 	IndexKey      []string
@@ -71,11 +71,38 @@ func CountyParser(AllInfo AllLegalInfo) {
 
 	switch AllInfo.RemarkPtr {
 	case true:
-		for _, key := range AllInfo.ExportKey {
-			fmt.Println("Key:", key, "=>", "Element:", AllInfo.ExportContent[key][0][0])
+		for _, key_year := range AllInfo.ExportKey {
+			for row_num, info := range AllInfo.ExportContent[key_year] {
+				if row_num == 0 {
+					continue
+				}
+
+				InstrumentInfo := InstrumentInfo{}
+
+				for elem_num, content := range info {
+					switch elem_num {
+					case 4:
+						InstrumentInfo.ID = content
+					case 13:
+						callCountyRemarksParser(AllInfo.CountyName, content, &InstrumentInfo)
+						AllInfo.ExportContent[key_year][row_num][15] = GroupLegals(InstrumentInfo)
+						// fmt.Println(AllInfo.ExportContent[key_year][row_num][13], "|", AllInfo.ExportContent[key_year][row_num][15])
+					}
+				}
+
+				// fmt.Println("Row_Num:", row_num, "=>", "Info:", info)
+			}
+			// fmt.Println("Key_Year:", key_year)
 		}
 	default:
 		// Remember to write for 1930-1980
 		fmt.Println("No function exists yet for index reading")
+	}
+}
+
+func callCountyRemarksParser(countyName string, remark string, InstrumentInfo *InstrumentInfo) {
+	switch countyName {
+	case "harrison":
+		HarrisonRemarksParser(remark, InstrumentInfo)
 	}
 }
