@@ -21,7 +21,7 @@ data received from Harrison Texas County.
 
 ## Usage
 
-```python
+```golang
 
 // Always assume that the program executable hasn't been built yet.
 // Especially on your first use.
