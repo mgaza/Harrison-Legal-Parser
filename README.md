@@ -17,7 +17,9 @@ data received from Harrison Texas County.
         - This has to be acquired from an export of the county's data
           living on the TexasFile database.
         - May sometimes already include the data needing to be parsed.
-      
+
+**Make sure all files are in the _same_ directory, not subdirectory and different from _Preformatted County Csv Files_**
+
     - Optional: Original County Index Files
         - When needing to parse county legal info, you'll most likely needing
           the original data files to read from unless the Preformatted County Csv File
