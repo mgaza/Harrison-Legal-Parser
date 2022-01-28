@@ -12,6 +12,7 @@ data received from Harrison Texas County.
     - GoLang
     
 **Make sure all files are in the _same_ directory, not subdirectory**
+    
     - Preformatted County Csv File
         - This has to be acquired from an export of the county's data
           living on the TexasFile database.
