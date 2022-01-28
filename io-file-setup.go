@@ -9,10 +9,10 @@ import (
 	"github.com/mgaza/goTools"
 )
 
-func ReadFilePaths(ericexportfilepath string, remarkPtr *bool) AllLegalInfo {
-	fileInfoToPass := AllLegalInfo{}
-	fileInfoToPass.ExportContent = make(map[string][][]string)
-	fileInfoToPass.RemarkPtr = *remarkPtr
+func ReadFilePaths(ericexportfilepath string, remarkPtr *bool) {
+
+	// fileInfoToPass.ExportContent = make(map[string][][]string)
+	// fileInfoToPass.RemarkPtr = *remarkPtr
 
 	switch *remarkPtr {
 	case true:
@@ -23,7 +23,11 @@ func ReadFilePaths(ericexportfilepath string, remarkPtr *bool) AllLegalInfo {
 		goTools.CheckErrorNonFatal("Could not make directory: ", err)
 
 		for _, s := range importfilepaths {
+			fileInfoToPass := AllLegalInfo{}
+			fileInfoToPass.RemarkPtr = *remarkPtr
+
 			openReadFile(s, outdirectory, &fileInfoToPass) // Do Not Read All Exports at Once. Instead Process One at a Time
+			CountyParser(fileInfoToPass)
 		}
 
 	default:
@@ -31,7 +35,7 @@ func ReadFilePaths(ericexportfilepath string, remarkPtr *bool) AllLegalInfo {
 		fmt.Println("No function exists yet for index reading")
 	}
 
-	return fileInfoToPass
+	// return fileInfoToPass
 }
 
 // Refactor to read in Contents, Write to Path, and Dump Export Info to save memory
@@ -39,8 +43,9 @@ func openReadFile(path string, outdirectory string, fileInfoToPass *AllLegalInfo
 	countyname, yearMonth := goTools.GetExportCountyYearMonth(path)
 	fileInfoToPass.CountyName = countyname
 
-	writeFileNamePath := outdirectory + "\\" + yearMonth + ".csv"
-	fileInfoToPass.OutputFiles = append(fileInfoToPass.OutputFiles, writeFileNamePath)
+	// writeFileNamePath := outdirectory + "\\" + yearMonth + ".csv"
+	fileInfoToPass.OutputFilePath = outdirectory
+	fileInfoToPass.OutputFileName = yearMonth + ".csv"
 
 	sourcefile, err := os.Open(path)
 	goTools.CheckErrorFatal("could not open: ", err)
@@ -49,8 +54,8 @@ func openReadFile(path string, outdirectory string, fileInfoToPass *AllLegalInfo
 	r := csv.NewReader(bufio.NewReader(sourcefile))
 	// fileReader(r)
 	records, _ := r.ReadAll()
-	fileInfoToPass.ExportContent[yearMonth] = records
-	fileInfoToPass.ExportKey = append(fileInfoToPass.ExportKey, yearMonth)
+	fileInfoToPass.ExportContent = records
+	// fileInfoToPass.ExportKey = append(fileInfoToPass.ExportKey, yearMonth)
 
 	// for _, i := range records {
 	// 	for _, j := range i {
