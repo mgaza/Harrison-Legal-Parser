@@ -37,7 +37,7 @@ C:\Users\user\sourceCodePath> go build
 
 // Call ".\Harrison-Legal-Parser.exe" with at least the "source" flag in order to run program.
 // The flags "index" and "remarkRead" are only needed if the county's parsing data needs to be read from their original files.
-// The end result will create a new folder called "output" in your "source" directory and store the newly written files with parsed legal info there.
+// The end result will create a new folder called "legals-imports" in your "source" directory and store the newly written files with parsed legal info there.
 // 
 // Flags and usage:
 //  - "source": 
