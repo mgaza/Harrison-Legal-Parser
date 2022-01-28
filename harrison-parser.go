@@ -64,6 +64,9 @@ func fillRemarksLegalAttributes(locLegalAtt *LegalAttributes, property string) {
 
 	cleanSurveyName(&locLegalAtt.SurveyName)
 	cleanAcres(&locLegalAtt.Acreage)
+
+	locLegalAtt.SubBlockKey = locLegalAtt.Subdivision + locLegalAtt.Block
+	locLegalAtt.SurNameNumKey = locLegalAtt.SurveyName + locLegalAtt.SurveyNumber
 }
 
 func findRemarksLegalProperty(regVar string, property string) string {

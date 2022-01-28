@@ -45,6 +45,10 @@ type LegalAttributes struct {
 	Township                  string
 	Tract                     string
 	Unit                      string
+
+	// use these for combining properties
+	SubBlockKey   string
+	SurNameNumKey string
 }
 
 type AmountAttributes struct {
@@ -68,6 +72,7 @@ type AllLegalInfo struct {
 }
 
 func CountyParser(AllInfo AllLegalInfo) {
+	stophere := ""
 
 	switch AllInfo.RemarkPtr {
 	case true:
@@ -86,7 +91,9 @@ func CountyParser(AllInfo AllLegalInfo) {
 					case 13:
 						callCountyRemarksParser(AllInfo.CountyName, content, &InstrumentInfo)
 						AllInfo.ExportContent[key_year][row_num][15] = GroupLegals(InstrumentInfo)
-						// fmt.Println(AllInfo.ExportContent[key_year][row_num][13], "|", AllInfo.ExportContent[key_year][row_num][15])
+
+						fmt.Println(AllInfo.ExportContent[key_year][row_num][13], "|", AllInfo.ExportContent[key_year][row_num][15])
+						fmt.Scanln(&stophere)
 					}
 				}
 
