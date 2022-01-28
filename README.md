@@ -5,6 +5,8 @@
 Harrison Legal Parser is a GoLang program for analyzing/engineering
 data received from Harrison Texas County.
 
+> Note: index flag is still in development and currently not operable
+
 ## Prerequisites
 
     - GoLang
@@ -12,12 +14,12 @@ data received from Harrison Texas County.
         - This has to be acquired from an export of the county's data
           living on the TexasFile database.
         - May sometimes already include the data needing to be parsed.
-        - **Make sure all files are in the _same_ directory, not subdirectory**
+        **Make sure all files are in the _same_ directory, not subdirectory**
     - Optional: Original County Index Files
         - When needing to parse county legal info, you'll most likely needing
           the original data files to read from unless the Preformatted County Csv File
           contains info readable enough to parse fully.
-        - **Make sure all files are in the _same_ directory, not subdirectory**
+        **Make sure all files are in the _same_ directory, not subdirectory**
 
 ## Usage
 
