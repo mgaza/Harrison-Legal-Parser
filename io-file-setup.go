@@ -3,48 +3,49 @@ package main
 import (
 	"bufio"
 	"encoding/csv"
-	"fmt"
+	"io"
 	"os"
 
 	"github.com/mgaza/goTools"
 )
 
-func ReadFilePaths(ericexportfilepath string, remarkPtr *bool) {
+func ReadFilePaths(ericexportfilepath string, indexfilespath string, remarkPtr *bool) {
 
-	// fileInfoToPass.ExportContent = make(map[string][][]string)
-	// fileInfoToPass.RemarkPtr = *remarkPtr
+	importfilepaths := goTools.FilePathWalker(ericexportfilepath, `([a-z]+|[a-z]+_[a-z]+)_\d{4}-\d{2}-\d{2}_\d{4}-\d{2}-\d{2}`)
 
-	switch *remarkPtr {
-	case true:
-		importfilepaths := goTools.FilePathWalker(ericexportfilepath, `([a-z]+|[a-z]+_[a-z]+)_\d{4}-\d{2}-\d{2}_\d{4}-\d{2}-\d{2}`)
+	for _, s := range importfilepaths {
+		fileInfoToPass := AllLegalInfo{}
+		fileInfoToPass.RemarkPtr = *remarkPtr
 
-		for _, s := range importfilepaths {
-			fileInfoToPass := AllLegalInfo{}
-			fileInfoToPass.RemarkPtr = *remarkPtr
+		openReadFile(s, ericexportfilepath, &fileInfoToPass, remarkPtr)
 
-			openReadFile(s, ericexportfilepath, &fileInfoToPass) // Do Not Read All Exports at Once. Instead Process One at a Time
+		err := os.Mkdir(fileInfoToPass.OutputFilePath, 0755)
+		goTools.CheckErrorNonFatal("Could not make directory: ", err)
 
-			// outdirectory := ericexportfilepath + "\\output"
-			err := os.Mkdir(fileInfoToPass.OutputFilePath, 0755)
-			goTools.CheckErrorNonFatal("Could not make directory: ", err)
+		if !*remarkPtr {
+			fileName := fileInfoToPass.OutputFileName[0:4] + `\.txt`
+			indexes := goTools.FilePathWalker(indexfilespath, fileName)
 
-			CountyParser(fileInfoToPass)
+			dat, err := os.Open(indexes[0])
+			goTools.CheckErrorFatal("Could not read index: ", err)
+			defer dat.Close()
+
+			r := bufio.NewScanner(dat)
+
+			for r.Scan() {
+				fileInfoToPass.IndexContent = append(fileInfoToPass.IndexContent, r.Text())
+			}
 		}
 
-	default:
-		// Remember to write for 1930-1980
-		fmt.Println("No function exists yet for index reading")
+		CountyParser(fileInfoToPass)
 	}
 
-	// return fileInfoToPass
 }
 
-// Refactor to read in Contents, Write to Path, and Dump Export Info to save memory
-func openReadFile(path string, ericexportfilepath string, fileInfoToPass *AllLegalInfo) {
+func openReadFile(path string, ericexportfilepath string, fileInfoToPass *AllLegalInfo, remarkPtr *bool) {
 	countyname, yearMonth := goTools.GetExportCountyYearMonth(path)
 	fileInfoToPass.CountyName = countyname
 
-	// writeFileNamePath := outdirectory + "\\" + yearMonth + ".csv"
 	fileInfoToPass.OutputFilePath = ericexportfilepath + "\\legals-imports\\" + yearMonth
 	fileInfoToPass.OutputFileName = yearMonth + ".csv"
 
@@ -53,31 +54,26 @@ func openReadFile(path string, ericexportfilepath string, fileInfoToPass *AllLeg
 	defer goTools.CloseFile(sourcefile)
 
 	r := csv.NewReader(bufio.NewReader(sourcefile))
-	// fileReader(r)
-	records, _ := r.ReadAll()
-	fileInfoToPass.ExportContent = records
-	// fileInfoToPass.ExportKey = append(fileInfoToPass.ExportKey, yearMonth)
-
-	// for _, i := range records {
-	// 	for _, j := range i {
-	// 		fmt.Println(j)
-	// 	}
-	// }
-	// goTools.OpenAndWriteCSVFile("thisisatest.csv", outdirectory, records)
+	appendExport(r, fileInfoToPass, remarkPtr)
 
 }
 
-// func fileReader(newFile *csv.Reader) {
+func appendExport(newFile *csv.Reader, fileInfoToPass *AllLegalInfo, remarkPtr *bool) {
 
-// 	// Iterate through the records
-// 	for {
-// 		// Read each record from csv
-// 		record, err := newFile.Read()
+	// Iterate through the records
+	for {
+		// Read each record from csv
+		record, err := newFile.Read()
 
-// 		if err == io.EOF {
-// 			break
-// 		}
-// 		goTools.CheckErrorFatal("Found an error: ", err)
-// 		fmt.Printf("remark: %s\n", record[13])
-// 	}
-// }
+		if err == io.EOF {
+			break
+		}
+		goTools.CheckErrorFatal("Found an error: ", err)
+
+		if record[13] != "" && *remarkPtr {
+			fileInfoToPass.ExportContent = append(fileInfoToPass.ExportContent, record)
+		} else if !*remarkPtr {
+			fileInfoToPass.ExportContent = append(fileInfoToPass.ExportContent, record)
+		}
+	}
+}

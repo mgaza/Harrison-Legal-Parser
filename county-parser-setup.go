@@ -64,11 +64,9 @@ type ReferenceAttributes struct {
 }
 
 type AllLegalInfo struct {
-	CountyName    string
-	ExportContent [][]string // Change to Not Map
-	// ExportKey     []string
-	IndexContent   map[string][][]string
-	IndexKey       []string
+	CountyName     string
+	ExportContent  [][]string
+	IndexContent   []string
 	OutputFilePath string
 	OutputFileName string
 	RemarkPtr      bool
