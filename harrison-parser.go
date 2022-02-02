@@ -103,6 +103,7 @@ func fillRemarksLegalAttributes(locLegalAtt *LegalAttributes, property string) {
 
 	cleanSurveyName(&locLegalAtt.SurveyName)
 	cleanAcres(&locLegalAtt.Acreage)
+	expSubdivision(&locLegalAtt.Subdivision)
 
 	locLegalAtt.SubBlockKey = locLegalAtt.Subdivision + locLegalAtt.Block
 	locLegalAtt.SurNameNumKey = locLegalAtt.SurveyName + locLegalAtt.SurveyNumber
@@ -202,6 +203,7 @@ func fillIndexLegalAttributes(legal string) []LegalAttributes {
 
 		cleanSurveyName(&sur)
 		cleanAcres(&acre)
+		expSubdivision(&sub)
 
 		SubBlkKey := sub + block
 		SurNNKey := sur + surNum
@@ -316,4 +318,9 @@ func convertFractionToDecimalString(fraction *string) {
 
 		// fmt.Println(first, "/", second, "=", *fraction)
 	}
+}
+
+func expSubdivision(sub *string) {
+	*sub = strings.ReplaceAll(*sub, "SUBD", "SUBDIVISION")
+	*sub = strings.ReplaceAll(*sub, "ADDN", "ADDITION")
 }
