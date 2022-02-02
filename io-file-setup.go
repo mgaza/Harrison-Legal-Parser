@@ -11,6 +11,9 @@ import (
 
 func ReadFilePaths(ericexportfilepath string, indexfilespath string, remarkPtr *bool) {
 
+	err := os.Mkdir(ericexportfilepath+`\legals-import`, 0755)
+	goTools.CheckErrorNonFatal("Could not make directory: ", err)
+
 	importfilepaths := goTools.FilePathWalker(ericexportfilepath, `([a-z]+|[a-z]+_[a-z]+)_\d{4}-\d{2}-\d{2}_\d{4}-\d{2}-\d{2}`)
 
 	for _, s := range importfilepaths {
@@ -46,7 +49,7 @@ func openReadFile(path string, ericexportfilepath string, fileInfoToPass *AllLeg
 	countyname, yearMonth := goTools.GetExportCountyYearMonth(path)
 	fileInfoToPass.CountyName = countyname
 
-	fileInfoToPass.OutputFilePath = ericexportfilepath + "\\legals-imports\\" + yearMonth
+	fileInfoToPass.OutputFilePath = ericexportfilepath + "\\legals-import\\" + yearMonth
 	fileInfoToPass.OutputFileName = yearMonth + ".csv"
 
 	sourcefile, err := os.Open(path)

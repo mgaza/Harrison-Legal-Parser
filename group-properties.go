@@ -69,8 +69,55 @@ func GroupLegals(InstrumentInfo InstrumentInfo) string {
 	}
 
 	completedLegalLine = strings.Join(formattedLegalInfo, "|")
+	completedLegalLine = strings.TrimSuffix(completedLegalLine, "|")
 
 	return completedLegalLine
+}
+
+func GroupAttributes(InstrumentInfo InstrumentInfo) string {
+	completedAttributeLine := ""
+
+	for _, elem := range InstrumentInfo.AmountAttributes {
+		if elem.Amount != "" {
+			if completedAttributeLine != "" {
+				completedAttributeLine = completedAttributeLine + "|amount:" + elem.Amount
+			} else {
+				completedAttributeLine = "amount:" + elem.Amount
+			}
+		}
+	}
+
+	return completedAttributeLine
+}
+
+func GroupReferences(InstrumentInfo InstrumentInfo) string {
+	completedReferenceLine := ""
+
+	for _, elem := range InstrumentInfo.ReferenceAttributes {
+		if elem.Number != "" {
+			if elem.Volume != "" {
+				if completedReferenceLine != "" {
+					completedReferenceLine = completedReferenceLine + "|number:" + elem.Number + ";volume:" + elem.Volume + ";page:" + elem.Page
+				} else {
+					completedReferenceLine = "number:" + elem.Number + ";volume:" + elem.Volume + ";page:" + elem.Page
+				}
+			} else {
+				if completedReferenceLine != "" {
+					completedReferenceLine = completedReferenceLine + "|number:" + elem.Number
+				} else {
+					completedReferenceLine = "number:" + elem.Number
+				}
+			}
+		} else if elem.Volume != "" {
+			if completedReferenceLine != "" {
+				completedReferenceLine = completedReferenceLine + "|volume:" + elem.Volume + ";page:" + elem.Page
+			} else {
+				completedReferenceLine = "volume:" + elem.Volume + ";page:" + elem.Page
+			}
+		}
+	}
+
+	return completedReferenceLine
 }
 
 func grabKeyIndexes(keySlc []string, sbKey string, snKey string) [2]int {

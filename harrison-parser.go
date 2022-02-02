@@ -29,6 +29,45 @@ func HarrisonRemarksParser(remark string, InstrumentInfo *InstrumentInfo) {
 
 }
 
+func HarrisonIndexParser(indexes []string, indexMap map[string]InstrumentInfo) map[string]InstrumentInfo {
+	for _, line := range indexes {
+		lineElem := strings.Split(line, "|")
+
+		mapKey := makeMapKey(lineElem[0], lineElem[1])
+
+		indexMap[mapKey] = InstrumentInfo{
+			ID:                  lineElem[0],
+			LegalAttributes:     fillIndexLegalAttributes(lineElem[9]),
+			AmountAttributes:    append(indexMap[lineElem[0]].AmountAttributes, AmountAttributes{}),
+			ReferenceAttributes: append(indexMap[lineElem[0]].ReferenceAttributes, fillIndexReferenceAttributes(lineElem[6])),
+		}
+
+		// fmt.Println(indexMap[mapKey].ID, indexMap[mapKey].ReferenceAttributes)
+	}
+	return indexMap
+}
+
+func makeMapKey(f string, s string) string {
+	ye := regexp.MustCompile(`^19[78]\d-00`)
+	matchedYe := ye.MatchString(f)
+
+	if matchedYe {
+		f = f[5:]
+	}
+
+	f = strings.ReplaceAll(f, "-", "")
+
+	re := regexp.MustCompile(`B:\s+(.+?)\s+V:\s+(.+?)\s+P:\s+(.+?)$`)
+	matched := re.MatchString(s)
+
+	if matched {
+		matches := re.FindStringSubmatch(s)
+		return f + matches[1] + matches[2] + matches[3]
+	} else {
+		return f
+	}
+}
+
 func labelRemarksPropertyString(property *string) {
 	if strings.Contains(*property, "Survey Name:") {
 		*property = strings.ReplaceAll(*property, "Survey Name:", "}Survey Name:")
@@ -83,8 +122,142 @@ func findRemarksLegalProperty(regVar string, property string) string {
 	}
 }
 
+func fillIndexLegalAttributes(legal string) []LegalAttributes {
+	toFill := []LegalAttributes{}
+	props := strings.Split(legal, ";")
+
+	sub := ""
+	lot := ""
+	block := ""
+	sur := ""
+	surNum := ""
+	abs := ""
+	sec := ""
+	acre := ""
+
+	reAcre := regexp.MustCompile(`ACS$`)
+	reAbst := regexp.MustCompile(`A-\d+`)
+	reInt := regexp.MustCompile(`\d+`)
+	reSur := regexp.MustCompile(`SUR$?`)
+
+	for _, p := range props {
+		elem := strings.Split(p, ":")
+
+		for key, e := range elem {
+			switch key {
+			case 0:
+				sub = strings.TrimSpace(e)
+
+				if reSur.MatchString(e) {
+					sub = ""
+					sur = e
+
+					if reAbst.MatchString(e) {
+						sur = strings.Split(e, "A-")[0]
+						abs = strings.Split(e, "A-")[1]
+					}
+				}
+			case 1:
+				if e != "P" {
+					lot = strings.TrimSpace(e)
+				}
+
+				if reAcre.MatchString(e) {
+					lot = ""
+					acre = strings.ReplaceAll(e, "ACS", "")
+				}
+			case 2:
+				block = strings.TrimSpace(e)
+			case 5:
+				if sur == "" {
+					sur = strings.TrimSpace(e)
+				}
+
+				if reAbst.MatchString(e) {
+					sur = strings.Split(e, "A-")[0]
+					abs = strings.Split(e, "A-")[1]
+				}
+			case 6:
+				if abs == "" {
+					abs = strings.TrimSpace(e)
+				}
+			case 9:
+				sec = strings.TrimSpace(e)
+			case 11:
+				if acre == "" {
+					acre = strings.TrimSpace(e)
+				}
+
+				if !reInt.MatchString(e) && e != "" {
+					acre = ""
+					sub = e
+				}
+			}
+		}
+
+		if containsSurveyNumber(sur) {
+			// fmt.Println(toFill.SurveyName)
+			surNum = extractSurveyNumber(&sur)
+		}
+
+		cleanSurveyName(&sur)
+		cleanAcres(&acre)
+
+		SubBlkKey := sub + block
+		SurNNKey := sur + surNum
+
+		toFill = append(toFill,
+			LegalAttributes{
+				Subdivision:    sub,
+				Lot:            lot,
+				Block:          block,
+				SurveyName:     sur,
+				SurveyNumber:   surNum,
+				AbstractNumber: abs,
+				Section:        sec,
+				Acreage:        acre,
+				SubBlockKey:    SubBlkKey,
+				SurNameNumKey:  SurNNKey,
+			})
+
+		sub = ""
+		lot = ""
+		block = ""
+		sur = ""
+		surNum = ""
+		abs = ""
+		sec = ""
+		acre = ""
+	}
+
+	return toFill
+}
+
+func fillIndexReferenceAttributes(ref string) ReferenceAttributes {
+	toFill := ReferenceAttributes{}
+	elem := strings.Split(ref, ":")
+
+	for key, e := range elem {
+		switch key {
+		case 0:
+			toFill.Number = strings.TrimSpace(e)
+		case 2:
+			toFill.Volume = strings.TrimSpace(e)
+		case 3:
+			toFill.Page = strings.TrimSpace(e)
+		}
+	}
+
+	if toFill.Volume == "" || toFill.Page == "" {
+		toFill.Volume = ""
+		toFill.Page = ""
+	}
+
+	return toFill
+}
+
 func extractSurveyNumber(surveyName *string) string {
-	re := regexp.MustCompile(`\s+(?P<surveynumber>\d+)[\s+]*$`)
+	re := regexp.MustCompile(`\s*#?(?P<surveynumber>\d+)[\s+]*$`)
 	matches := re.FindStringSubmatch(*surveyName)
 
 	*surveyName = strings.ReplaceAll(*surveyName, matches[1], "")
@@ -106,6 +279,7 @@ func cleanSurveyName(surveyName *string) {
 func cleanAcres(acres *string) {
 	if *acres != "" {
 		*acres = strings.ReplaceAll(*acres, "-", " ")
+		*acres = strings.ReplaceAll(*acres, "PT", "")
 
 		acreSlice := strings.Split(*acres, " ")
 
