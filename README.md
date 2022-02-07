@@ -9,7 +9,7 @@ data received from Harrison Texas County.
 
 ## Prerequisites
 
-    - GoLang
+    - [GoLang](https://go.dev/dl/)
     
 **Make sure all files are in the _same_ directory, not subdirectory**
     
